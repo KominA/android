@@ -103,14 +103,14 @@ public class MainActivity extends Activity {
 			+ "ÿ÷ñìèòüáşıæäëîğïàâûôéöóêåíãøùçõú¸ß×ÑÌÈÒÜÁŞİÆÄËÎĞÏÀÂÛÔÉÖÓÊÅÍÃØÙÇÕÚ .!{}[]-_!@#$%^&";
 	boolean isNormCoding(String str)
 	{
-		int cnt = 0;
+		int badSymCount = 0;
 		for (int i=0; i<str.length(); i++)
 		{
 			if (allowedChars.indexOf(str.charAt(i)) < 0)
-				cnt++;
+				badSymCount++;
 				
 		}
-		return cnt >= 1;
+		return badSymCount <= str.length()/2.5;
 	}
 	
 	public void downloadFiles(View v)
@@ -133,8 +133,9 @@ public class MainActivity extends Activity {
 				
 				String newFileName = makeNewMp3FileName(list[i]);
 				
-				if (newFileName.isEmpty() || !isNormCoding(newFileName)) 
+				if (newFileName.isEmpty() || !isNormCoding(newFileName)) {
 					newFileName = oldFileName.substring(oldFileName.lastIndexOf("/")+1);
+				}
 				
 				newFileName = newFileName.replaceAll("['*:|?<>\\\\/]", "");
 				
@@ -142,8 +143,6 @@ public class MainActivity extends Activity {
 			
 				
 				if (!newFileName.contains(".mp3")) newFileName += ".mp3";
-				
-				newFileName = oldFileName;
 				
 				String fullName = Environment.getExternalStorageDirectory() + "/Music/fromVK/"
 						+ newFileName;

@@ -74,7 +74,7 @@ public class OurWorker extends Thread {
 				if (!newFile.exists()) {
 					newFile.createNewFile();
 				} else {
-					sendMesToUI("* " + newFileName + " already exists!\n");
+					sendMesToUI("* File #" + (i + 1) + ": " + newFileName + " already exists!\n");
 					cachedFiles[i].delete();
 					continue;
 				}
@@ -87,7 +87,8 @@ public class OurWorker extends Thread {
 				cachedFiles[i].delete();
 
 			} catch (Exception e) {
-				sendMesToUI( e.toString()) ;
+				sendMesToUI("* File #" + (i + 1) + ": " + cachedFiles[i] + " is bad!\n") ;
+				cachedFiles[i].delete();
 			}
 
 		}

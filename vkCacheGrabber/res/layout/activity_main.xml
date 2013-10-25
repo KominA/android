@@ -9,24 +9,24 @@
     tools:context=".MainActivity" >
 
     <ScrollView
-        android:id="@+id/scrollView1"
+        android:id="@+id/scrollViewInfo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/button1"
-        android:layout_alignLeft="@+id/button1"
+        android:layout_above="@+id/copy_music"
+        android:layout_alignLeft="@+id/copy_music"
         android:layout_alignParentTop="true" >
         <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/button1"
-        android:layout_alignLeft="@+id/scrollView1"
+        android:layout_above="@+id/copy_music"
+        android:layout_alignLeft="@+id/scrollViewInfo"
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/textViewInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/button1"
+            android:layout_above="@+id/copy_music"
             android:text=""
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textSize="15sp" />
@@ -34,16 +34,14 @@
     </LinearLayout>
     </ScrollView>
 
-    
-
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/copy_music"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
         android:onClick="downloadFiles"
-        android:text="@string/DownloadFiles" />
+        android:text="@string/copy_music" />
 
 </RelativeLayout>

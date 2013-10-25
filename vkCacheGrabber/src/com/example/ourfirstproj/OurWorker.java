@@ -22,38 +22,37 @@ import android.os.Message;
 public class OurWorker extends Thread {
 
 	private Handler h;
+	private static final String allowedChars = "ZXCVBNMLKJHGFDSAQWERTYUIOPzxcvbnmlkjhgfdsaqwertyuiop"
+			+ "ячсмитьбюэждлорпавыфйцукенгшщзхъёЯЧСМИТЬБЮЭЖДЛОРПАВЫФЙЦУКЕНГШЩЗХЪ .!{}[]-_!@#$%^&";
+	private static final String illegalChars="['*:|?<>\\\\/]";
 	
 	OurWorker(Handler h) {
 		this.h = h;
 	}
 	
-	void sendMesToUI(String str) {
-		Message mes = new Message();
-		mes.what = 0;
-		mes.obj = str;
-		h.sendMessage(mes);
-	}
-	
 	public void run() {
-		File vkAudioCacheDir = new File(
-				Environment.getExternalStorageDirectory()
-						+ "/.vkontakte/cache/audio/");
+		
+		String sourceDirectory =Environment.getExternalStorageDirectory()+ "/.vkontakte/cache/audio/";
+		String destDirectory=Environment.getExternalStorageDirectory() + "/Music/fromVK";
+		
+		
+		//get files list from source directory 
+		File vkAudioCacheDir = new File(sourceDirectory);
 		File[] cachedFiles = vkAudioCacheDir.listFiles();
 
-		new File(Environment.getExternalStorageDirectory() + "/Music/fromVK")
-				.mkdir();
+		//create destination directory
+		new File(destDirectory).mkdir();
 
-		//text.setText("");
-		sendMesToUI( cachedFiles.length + " files found!\n");
+		sendMessegeToUI( cachedFiles.length + " files found!\n");
 
-
+		//copy every file
 		for (int i = 0; i < cachedFiles.length; i++) {
 			try {
-
 				String oldFileName = cachedFiles[i].toString();
 				if (oldFileName.contains(".cover"))
 					continue;
 
+				//form new file name
 				String newFileName = makeNewMp3FileName(cachedFiles[i]);
 
 				if (newFileName.isEmpty() || !isNormCoding(newFileName)) {
@@ -61,33 +60,33 @@ public class OurWorker extends Thread {
 							.lastIndexOf("/") + 1);
 				}
 
-				newFileName = newFileName.replaceAll("['*:|?<>\\\\/]", "")
-						.trim();
+				newFileName = newFileName.replaceAll(illegalChars, "").trim();
 
 				if (!newFileName.contains(".mp3"))
 					newFileName += ".mp3";
 
-				String fullName = Environment.getExternalStorageDirectory()
-						+ "/Music/fromVK/" + newFileName;
+				//create new file
+				String fullName = destDirectory +"/"+ newFileName;
 				File newFile = new File(fullName);
 
 				if (!newFile.exists()) {
 					newFile.createNewFile();
 				} else {
-					sendMesToUI("* File #" + (i + 1) + ": " + newFileName + " already exists!\n");
+					sendMessegeToUI("* File #" + (i + 1) + ": " + newFileName + " already exists!\n");
 					cachedFiles[i].delete();
 					continue;
 				}
 
 				copy(cachedFiles[i], newFile);
 
-				sendMesToUI("* File #" + (i + 1) + ": " + newFileName
+				sendMessegeToUI("* File #" + (i + 1) + ": " + newFileName
 						+ " copied success!\n");
 				
+				//delete old file
 				cachedFiles[i].delete();
 
 			} catch (Exception e) {
-				sendMesToUI("* File #" + (i + 1) + ": " + cachedFiles[i] + " is bad!\n") ;
+				sendMessegeToUI("* File #" + (i + 1) + ": " + cachedFiles[i] + " is bad!\n") ;
 				cachedFiles[i].delete();
 			}
 
@@ -100,7 +99,7 @@ public class OurWorker extends Thread {
 	}
 
 	@SuppressWarnings("resource")
-	public static void copy(File source, File dest) throws IOException {
+	private void copy(File source, File dest) throws IOException {
 
 		FileChannel sourceChannel = new FileInputStream(source).getChannel();
 		try {
@@ -116,8 +115,15 @@ public class OurWorker extends Thread {
 		}
 	}
 
+	private void sendMessegeToUI(String report) {
+		Message message = new Message();
+		message.what = 0;
+		message.obj = report;
+		h.sendMessage(message);
+	}
+	
 	@SuppressLint("NewApi")
-	String makeNewMp3FileName(File mp3File) throws ID3Exception {
+	private String makeNewMp3FileName(File mp3File) throws ID3Exception {
 		MediaFile oMediaFile = new MP3File(mp3File);
 		ID3Tag[] aoID3Tag = oMediaFile.getTags();
 		String title = "";
@@ -151,16 +157,14 @@ public class OurWorker extends Thread {
 		return res;
 	}
 
-	private static final String allowedChars = "ZXCVBNMLKJHGFDSAQWERTYUIOPzxcvbnmlkjhgfdsaqwertyuiop"
-			+ "ячсмитьбюэждлорпавыфйцукенгшщзхъёЯЧСМИТЬБЮЭЖДЛОРПАВЫФЙЦУКЕНГШЩЗХЪ .!{}[]-_!@#$%^&";
-
-	boolean isNormCoding(String str) {
-		int badSymCount = 0;
+	
+	private boolean isNormCoding(String str) {
+		int countBadChars = 0;
 		for (int i = 0; i < str.length(); i++) {
 			if (allowedChars.indexOf(str.charAt(i)) < 0)
-				badSymCount++;
+				countBadChars++;
 
 		}
-		return badSymCount <= str.length() / 2.5;
+		return countBadChars <= str.length() / 2.5;
 	}
 }

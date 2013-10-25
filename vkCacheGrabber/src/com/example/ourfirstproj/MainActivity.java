@@ -5,18 +5,24 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
-	TextView text;
+	TextView textViewInfo;
+	Button buttonCopy;
+	ScrollView scrollViewInfo;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		text = (TextView) findViewById(R.id.textView1);
+		
+		textViewInfo = (TextView) findViewById(R.id.textViewInfo);
+		scrollViewInfo=(ScrollView)findViewById(R.id.scrollViewInfo);
+		buttonCopy=(Button)findViewById(R.id.copy_music);
 	}
 
 	@Override
@@ -26,20 +32,19 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
-	public void downloadFiles(View v) {
-		text.setText("");	
-		findViewById(R.id.button1).setEnabled(false);
+	public void downloadFiles(View v) {	
+		textViewInfo.setText("");
+		buttonCopy.setEnabled(false);
 		
 		Handler h = new Handler() {
 		      public void handleMessage(android.os.Message msg) {
 		    	  
-		    	  if (msg.what == 15) 
-		    		  findViewById(R.id.button1).setEnabled(true);
+		    	  if (msg.what == 15)
+		    		  buttonCopy.setEnabled(true);
 		    	  else
 		    	  {
-		    		  text.append(msg.obj.toString());
-		    		  ScrollView vvvv = (ScrollView)findViewById(R.id.scrollView1);
-		    		  vvvv.scrollTo(0, 1000000);
+		    		  textViewInfo.append(msg.obj.toString());
+		    		  scrollViewInfo.scrollTo(0, 1000000);
 		    	  }
 		      };
 		    };
